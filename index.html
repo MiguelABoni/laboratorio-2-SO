@@ -155,31 +155,35 @@
         });
 
         botonImprimir.addEventListener('click', () =>{
-            gestorInterrupcion.start();
-            sistemaOperativo.stop();
-            estadoImpresora.innerHTML = "Esperando respuesta...";
-            estadoGestor.innerHTML = "Gestionando interrupción...";
-            estadoGestor.classList.add("ejecucion")
-            estadoSo.innerHTML = "❌ Procesos interrumpidos ❌";
-            estadoSo.classList.remove("ejecucion");
-            botonImprimir.classList.add("hide");
-            setTimeout(()=> {
-                botonAccion.classList.remove("hide");
-                estadoImpresora.innerHTML = "🔴 Bloqueado 🔴 <br><br> Esperando hoja 🧻";
-                gestorInterrupcion.stop();
-                estadoGestor.innerHTML = "🛑 Pausado 🛑";
-                estadoGestor.classList.remove("ejecucion")
+            estadoSo.innerHTML = "Guardando contador y estado del programa y registros del procesador...";
+            setTimeout(()=>{
 
-                sistemaOperativo.start();
-        
-                estadoSo.innerHTML = "Procesos reanudados <br><br> Ejecutando...";
-                estadoSo.classList.add("ejecucion");
-            }, 5000);
+                gestorInterrupcion.start();
+                sistemaOperativo.stop();
+                estadoImpresora.innerHTML = "Esperando respuesta...";
+                estadoGestor.innerHTML = "Gestionando interrupción...";
+                estadoGestor.classList.add("ejecucion")
+                estadoSo.innerHTML = "❌ Procesos interrumpidos ❌";
+                estadoSo.classList.remove("ejecucion");
+                botonImprimir.classList.add("hide");
+                setTimeout(()=> {
+                    botonAccion.classList.remove("hide");
+                    estadoImpresora.innerHTML = "🔴 Bloqueado 🔴 <br><br> Esperando hoja 🧻";
+                    gestorInterrupcion.stop();
+                    estadoGestor.innerHTML = "🛑 Pausado 🛑";
+                    estadoGestor.classList.remove("ejecucion")
+    
+                    sistemaOperativo.start();
+            
+                    estadoSo.innerHTML = "Procesos reanudados <br><br> Ejecutando...";
+                    estadoSo.classList.add("ejecucion");
+                }, 5000);
+            },3000);
         });
 
         botonAccion.addEventListener('click', () => {
             botonAccion.classList.add("hide");
-            estadoSo.innerHTML = "Guardando contador del programa y registros del procesador...";
+            estadoSo.innerHTML = "Guardando contador y estado del programa y registros del procesador...";
             setTimeout(()=>{
                 sistemaOperativo.stop();
                 estadoSo.innerHTML = "❌ Procesos interrumpidos ❌";
