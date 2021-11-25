@@ -1,12 +1,207 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Laboratorio #2</title>
+    <link rel="shortcut icon" href="https://cdn-icons-png.flaticon.com/512/969/969337.png">
 </head>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;600;700&family=VT323&display=swap');
+
+    body{
+        font-family: 'inconsolata', sans-serif;
+        background-image: white;
+    }
+    h1{
+        text-align: center;
+    }
+    .simulacion{
+        display: block;
+        margin: 0 auto;
+    }
+    .title{
+        color: rgb(32, 32, 32);
+    }
+    main{
+        margin-top: 15px;
+        height: 50vh;
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+    }
+    main div{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    main div h2{
+        color: rgb(33, 33, 34);
+        font-size: 26px;
+    }
+    main div h3{
+        color: rgb(255, 71, 71);
+        font-size: 22px;
+    }
+    .ejecucion{
+        color: #12802a;
+    }
+    main div figure img{
+        width: 100%;
+    }
+    main div:nth-child(1) figure img{
+        height: 300px;
+    }
+    .hide{
+        display: none;
+    }
+    button{
+        height: 40px;
+        border: 0;
+        border-radius: 15px;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+    .simulacion{
+        width: 200px;
+        background-color: #49E66A;
+    }
+    .simulacion:hover{
+        box-shadow: 0 4px 16px #49E66A;
+        transition: all 0.2s ease;
+    }
+    .boton-imprimir{
+        width: 100px;
+        background-color: #850ED4;
+        color: #fff;
+    }
+    .boton-imprimir:hover{
+        box-shadow: 0 4px 16px #850ED4;
+        transition: all 0.2s ease;
+    }
+    .boton-accion{
+        width: 200px;
+        background-color: #24DEEC;
+    }
+    .boton-accion:hover{
+        box-shadow: 0 4px 16px #24DEEC;
+        transition: all 0.2s ease;
+    }
+</style>
 <body>
-    
+    <h1 class="title">INTERRUPCIÓN POR E/S</h1>
+    <button class="simulacion">Iniciar simulación</button>
+    <main>
+        <div id="impresora">
+            <h2>Impresora</h2>
+            <figure>
+                <img src="./images/impresora.gif">
+            </figure>
+            <h3 class="estado-impresora ">🛑 Pausada 🛑</h2>
+            <button class="boton-imprimir">Imprimir</button>
+            <button class="hide boton-accion">Ingresar hoja</button>
+        </div>
+        <div id="gestor-interrupcion">
+            <h2>Gestor de interrupciones</h2>
+            <figure>
+                <img src="./images/gestor.gif">
+            </figure>
+            <h3 class="estado-gestor ">🛑 Pausado 🛑</h2>
+        </div>
+        <div id="sistema-operativo">
+            <h2>Procesos del Sistema Operativo</h2>
+            <figure>
+                <img src="./images/so.gif">
+            </figure>
+            <h3 class="estado-so ">🛑 Pausados 🛑</h2>
+        </div>
+    </main>
+
+    <script src="https://unpkg.com/freezeframe/dist/freezeframe.min.js"></script>
+    <script>
+        const botonImprimir = document.querySelector(".boton-imprimir");
+        const estadoImpresora = document.querySelector(".estado-impresora");
+        const estadoSo = document.querySelector(".estado-so");
+        const estadoGestor = document.querySelector(".estado-gestor");
+        const botonAccion = document.querySelector(".boton-accion");
+        const botonSimulacion = document.querySelector(".simulacion");
+
+        const impresora = new Freezeframe('#impresora', {
+            trigger: false
+        });
+        
+        const gestorInterrupcion = new Freezeframe('#gestor-interrupcion', {
+            trigger: false
+        });
+        
+        const sistemaOperativo = new Freezeframe('#sistema-operativo', {
+            trigger: false
+        });
+
+        botonImprimir.classList.add("hide");
+        
+        botonSimulacion.addEventListener('click', () => {
+            sistemaOperativo.start();
+            estadoSo.innerHTML = "Ejecutando...";
+            estadoSo.classList.add("ejecucion");
+            botonSimulacion.classList.add("hide");
+            botonImprimir.classList.remove("hide");
+        });
+
+        botonImprimir.addEventListener('click', () =>{
+            gestorInterrupcion.start();
+            sistemaOperativo.stop();
+            estadoImpresora.innerHTML = "Esperando respuesta...";
+            estadoGestor.innerHTML = "Gestionando interrupción...";
+            estadoGestor.classList.add("ejecucion")
+            estadoSo.innerHTML = "❌ Procesos interrumpidos ❌";
+            estadoSo.classList.remove("ejecucion");
+            botonImprimir.classList.add("hide");
+            setTimeout(()=> {
+                botonAccion.classList.remove("hide");
+                estadoImpresora.innerHTML = "🔴 Bloqueado 🔴 <br><br> Esperando hoja 🧻";
+                gestorInterrupcion.stop();
+                estadoGestor.innerHTML = "🛑 Pausado 🛑";
+                estadoGestor.classList.remove("ejecucion")
+
+                sistemaOperativo.start();
+        
+                estadoSo.innerHTML = "Procesos reanudados <br><br> Ejecutando...";
+                estadoSo.classList.add("ejecucion");
+            }, 5000);
+        });
+
+        botonAccion.addEventListener('click', () => {
+            botonAccion.classList.add("hide");
+            estadoSo.innerHTML = "Guardando contador del programa y registros del procesador...";
+            setTimeout(()=>{
+                sistemaOperativo.stop();
+                estadoSo.innerHTML = "❌ Procesos interrumpidos ❌";
+                estadoSo.classList.remove("ejecucion");
+                sistemaOperativo.stop();
+                impresora.start();
+                estadoImpresora.innerHTML = "Imprimiendo... 🖨";
+                estadoImpresora.classList.add("ejecucion")
+                setTimeout(()=>{
+                    alert("✔ Impresión satisfactoria ✔");
+                    sistemaOperativo.start();
+                    sistemaOperativo.destroy();
+                    estadoSo.innerHTML = "Ejecutando...";
+                    estadoSo.classList.add("ejecucion");
+                    impresora.stop();
+                    estadoImpresora.innerHTML = "🛑 Pausada 🛑";
+                    estadoImpresora.classList.remove("ejecucion")
+                    botonImprimir.classList.remove("hide");
+                }, 5000);
+            }, 5000);
+        });
+
+    </script>
 </body>
 </html>
